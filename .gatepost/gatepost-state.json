@@ -1,0 +1,477 @@
+{
+  "integrations": [
+    {
+      "id": "sample",
+      "name": "sample",
+      "system": "ORders",
+      "environment": "prod",
+      "server": "http://localhost:41131/mcp",
+      "source_kind": "http_json",
+      "live_schema_path": "/tools",
+      "http_url": "http://localhost:41131/mcp/tools",
+      "mcp_command": null,
+      "mcp_args": [],
+      "sample_tool_calls": [],
+      "snapshot_path": ".gatepost\\snapshots\\sample-approved.json",
+      "policy_mode": "alert_only",
+      "check_interval_seconds": 30,
+      "approved_snapshot": {
+        "metadata": {
+          "system": "ORders",
+          "environment": "prod",
+          "server": "http://localhost:41131/mcp",
+          "approved_by": "manual.baseline.ping",
+          "approved_at_epoch_ms": 1773339602613
+        },
+        "schema": {
+          "availableVersions": [
+            1,
+            2
+          ],
+          "protocolVersion": "2024-11-05",
+          "serverName": "Orders API",
+          "serverVersion": "1.0.0",
+          "toolCount": 14,
+          "tools": [
+            {
+              "category": null,
+              "description": "Lists all customers.",
+              "examples": null,
+              "hints": null,
+              "httpMethod": "GET",
+              "inputSchema": {
+                "properties": {},
+                "type": "object"
+              },
+              "isStreaming": false,
+              "name": "list_customers",
+              "requiredPolicy": null,
+              "requiredRoles": null,
+              "route": "api/Customer",
+              "tags": null,
+              "version": null
+            },
+            {
+              "category": null,
+              "description": "Retrieves a single customer by ID.",
+              "examples": null,
+              "hints": null,
+              "httpMethod": "GET",
+              "inputSchema": {
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "type": "object"
+              },
+              "isStreaming": false,
+              "name": "get_customer",
+              "requiredPolicy": null,
+              "requiredRoles": null,
+              "route": "api/Customer/{id}",
+              "tags": null,
+              "version": null
+            },
+            {
+              "category": null,
+              "description": "Returns all orders for the given customer ID. Uses nested route Customer/{id}/orders.",
+              "examples": null,
+              "hints": null,
+              "httpMethod": "GET",
+              "inputSchema": {
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "type": "object"
+              },
+              "isStreaming": false,
+              "name": "get_customer_orders",
+              "requiredPolicy": null,
+              "requiredRoles": null,
+              "route": "api/Customer/{id}/orders",
+              "tags": null,
+              "version": null
+            },
+            {
+              "category": null,
+              "description": "Creates a new customer. Returns the created customer with assigned ID.",
+              "examples": null,
+              "hints": null,
+              "httpMethod": "POST",
+              "inputSchema": {
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "isStreaming": false,
+              "name": "create_customer",
+              "requiredPolicy": null,
+              "requiredRoles": null,
+              "route": "api/Customer",
+              "tags": [
+                "write"
+              ],
+              "version": null
+            },
+            {
+              "category": null,
+              "description": "Retrieves a single order by its numeric ID. Requires authentication.",
+              "examples": null,
+              "hints": null,
+              "httpMethod": "GET",
+              "inputSchema": {
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "type": "object"
+              },
+              "isStreaming": false,
+              "name": "get_secure_order",
+              "requiredPolicy": null,
+              "requiredRoles": null,
+              "route": "api/Orders/secure/{id}",
+              "tags": null,
+              "version": null
+            },
+            {
+              "category": null,
+              "description": "Lists all orders. Optionally filter by status (pending, shipped, cancelled).",
+              "examples": null,
+              "hints": null,
+              "httpMethod": "GET",
+              "inputSchema": {
+                "properties": {
+                  "status": {
+                    "type": "string"
+                  }
+                },
+                "type": "object"
+              },
+              "isStreaming": false,
+              "name": "list_orders",
+              "requiredPolicy": null,
+              "requiredRoles": null,
+              "route": "api/Orders",
+              "tags": null,
+              "version": null
+            },
+            {
+              "category": null,
+              "description": "Creates a new order. Returns the created order with its assigned ID.",
+              "examples": null,
+              "hints": null,
+              "httpMethod": "POST",
+              "inputSchema": {
+                "properties": {
+                  "customerName": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "product": {
+                    "minLength": 1,
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "maximum": 1000,
+                    "minimum": 1,
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "customerName",
+                  "product"
+                ],
+                "type": "object"
+              },
+              "isStreaming": false,
+              "name": "create_order",
+              "requiredPolicy": null,
+              "requiredRoles": null,
+              "route": "api/Orders",
+              "tags": [
+                "write"
+              ],
+              "version": null
+            },
+            {
+              "category": null,
+              "description": "Uploads a document. Accepts base64-encoded content via MCP.",
+              "examples": null,
+              "hints": null,
+              "httpMethod": "POST",
+              "inputSchema": {
+                "properties": {
+                  "document": {
+                    "description": "Base64-encoded file content",
+                    "format": "byte",
+                    "type": "string"
+                  },
+                  "document_content_type": {
+                    "description": "MIME type (optional, e.g. application/pdf)",
+                    "type": "string"
+                  },
+                  "document_filename": {
+                    "description": "Original filename (optional)",
+                    "type": "string"
+                  },
+                  "title": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "document"
+                ],
+                "type": "object"
+              },
+              "isStreaming": false,
+              "name": "upload_document",
+              "requiredPolicy": null,
+              "requiredRoles": null,
+              "route": "api/Orders/upload",
+              "tags": [
+                "write"
+              ],
+              "version": null
+            },
+            {
+              "category": null,
+              "description": "Updates the status of an existing order.",
+              "examples": null,
+              "hints": null,
+              "httpMethod": "PATCH",
+              "inputSchema": {
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "status": {
+                    "minLength": 1,
+                    "pattern": "^(pending|shipped|cancelled)$",
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "id",
+                  "status"
+                ],
+                "type": "object"
+              },
+              "isStreaming": false,
+              "name": "update_order_status",
+              "requiredPolicy": null,
+              "requiredRoles": null,
+              "route": "api/Orders/{id}/status",
+              "tags": null,
+              "version": null
+            },
+            {
+              "category": null,
+              "description": "Streams all orders progressively with a simulated delay between each item.",
+              "examples": null,
+              "hints": null,
+              "httpMethod": "GET",
+              "inputSchema": {
+                "properties": {},
+                "type": "object"
+              },
+              "isStreaming": true,
+              "name": "stream_orders",
+              "requiredPolicy": null,
+              "requiredRoles": null,
+              "route": "api/Orders/stream",
+              "tags": null,
+              "version": null
+            },
+            {
+              "category": null,
+              "description": "Lists all products.",
+              "examples": null,
+              "hints": null,
+              "httpMethod": "GET",
+              "inputSchema": {
+                "properties": {},
+                "type": "object"
+              },
+              "isStreaming": false,
+              "name": "list_products",
+              "requiredPolicy": null,
+              "requiredRoles": null,
+              "route": "api/Product",
+              "tags": null,
+              "version": null
+            },
+            {
+              "category": null,
+              "description": "Retrieves a single product by ID.",
+              "examples": null,
+              "hints": null,
+              "httpMethod": "GET",
+              "inputSchema": {
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "type": "object"
+              },
+              "isStreaming": false,
+              "name": "get_product",
+              "requiredPolicy": null,
+              "requiredRoles": null,
+              "route": "api/Product/{id}",
+              "tags": null,
+              "version": null
+            },
+            {
+              "category": null,
+              "description": "Creates a new product. Returns the created product with assigned ID.",
+              "examples": null,
+              "hints": null,
+              "httpMethod": "POST",
+              "inputSchema": {
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "number"
+                  }
+                },
+                "type": "object"
+              },
+              "isStreaming": false,
+              "name": "create_product",
+              "requiredPolicy": null,
+              "requiredRoles": null,
+              "route": "api/Product",
+              "tags": [
+                "write"
+              ],
+              "version": null
+            },
+            {
+              "category": null,
+              "description": "Retrieves a single order by ID with expanded detail.",
+              "examples": null,
+              "hints": null,
+              "httpMethod": "GET",
+              "inputSchema": {
+                "properties": {
+                  "id": {
+                    "type": "integer"
+                  },
+                  "includeHistory": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "id"
+                ],
+                "type": "object"
+              },
+              "isStreaming": false,
+              "name": "get_order",
+              "requiredPolicy": null,
+              "requiredRoles": null,
+              "route": "api/Orders/v2/{id}",
+              "tags": null,
+              "version": 2
+            }
+          ],
+          "version": 2
+        }
+      },
+      "last_report": {
+        "drift_detected": false,
+        "entries": []
+      },
+      "incidents": [],
+      "status": {
+        "trust_state": "error",
+        "drift_detected": false,
+        "last_checked_epoch_ms": 1773349078781,
+        "summary": "GatePOST could not capture the current MCP contract.",
+        "error_message": "Failed to connect to localhost:41131: No connection could be made because the target machine actively refused it. (os error 10061)"
+      }
+    },
+    {
+      "id": "sample2",
+      "name": "sample2",
+      "system": "1",
+      "environment": "1",
+      "server": "http://localhost:41131/mcp/tools",
+      "source_kind": "http_json",
+      "live_schema_path": "http://localhost:41131/mcp/tools",
+      "http_url": "http://localhost:41131/mcp",
+      "mcp_command": null,
+      "mcp_args": [],
+      "sample_tool_calls": [],
+      "snapshot_path": ".gatepost\\snapshots\\sample2-approved.json",
+      "policy_mode": "alert_only",
+      "check_interval_seconds": 30,
+      "approved_snapshot": {
+        "metadata": {
+          "system": "1",
+          "environment": "1",
+          "server": "http://localhost:41131/mcp/tools",
+          "approved_by": "manual.baseline.ping",
+          "approved_at_epoch_ms": 1773339560231
+        },
+        "schema": {
+          "example": {
+            "id": 1,
+            "jsonrpc": "2.0",
+            "method": "initialize",
+            "params": {
+              "clientInfo": {
+                "name": "client",
+                "version": "1.0"
+              },
+              "protocolVersion": "2024-11-05"
+            }
+          },
+          "message": "Send POST requests with JSON-RPC 2.0 body. Methods: initialize, tools/list, tools/call.",
+          "protocol": "MCP",
+          "server": "Orders API",
+          "transport": "streamable HTTP",
+          "version": "1.0.0"
+        }
+      },
+      "last_report": {
+        "drift_detected": false,
+        "entries": []
+      },
+      "incidents": [],
+      "status": {
+        "trust_state": "error",
+        "drift_detected": false,
+        "last_checked_epoch_ms": 1773349085859,
+        "summary": "GatePOST could not capture the current MCP contract.",
+        "error_message": "Failed to connect to localhost:41131: No connection could be made because the target machine actively refused it. (os error 10061)"
+      }
+    }
+  ]
+}

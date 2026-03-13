@@ -1,0 +1,23 @@
+{
+  "name": "external-search",
+  "description": "Search tools exposed by a partner MCP server",
+  "tools": {
+    "search": {
+      "description": "Search external content",
+      "inputSchema": {
+        "type": "object",
+        "required": ["q"],
+        "properties": {
+          "q": { "type": "string" },
+          "limit": { "type": "integer", "default": 10 }
+        }
+      },
+      "outputSchema": {
+        "type": "object",
+        "properties": {
+          "results": { "type": "array" }
+        }
+      }
+    }
+  }
+}

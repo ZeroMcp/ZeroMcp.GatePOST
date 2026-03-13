@@ -1,0 +1,28 @@
+{
+  "metadata": {
+    "system": "1",
+    "environment": "1",
+    "server": "http://localhost:41131/mcp/tools",
+    "approved_by": "manual.baseline.ping",
+    "approved_at_epoch_ms": 1773339560231
+  },
+  "schema": {
+    "example": {
+      "id": 1,
+      "jsonrpc": "2.0",
+      "method": "initialize",
+      "params": {
+        "clientInfo": {
+          "name": "client",
+          "version": "1.0"
+        },
+        "protocolVersion": "2024-11-05"
+      }
+    },
+    "message": "Send POST requests with JSON-RPC 2.0 body. Methods: initialize, tools/list, tools/call.",
+    "protocol": "MCP",
+    "server": "Orders API",
+    "transport": "streamable HTTP",
+    "version": "1.0.0"
+  }
+}

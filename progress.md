@@ -1,0 +1,32 @@
+## 2026-03-12
+
+- Added backend support for editing existing integration targets via `PUT /api/integrations/{id}`.
+- Added baseline ping support via `POST /api/integrations/{id}/baseline/ping`.
+- Updated manual check behavior to return and persist explicit baseline-not-found errors when no approved baseline exists.
+- Updated the UI to:
+  - edit existing targets in-place (`Edit target` flow),
+  - trigger baseline pings (`Ping baseline` button),
+  - retain and display baseline-related errors cleanly.
+- Added tests for missing-baseline error handling and target-edit reset behavior.
+- Updated `README.md` to document target editing, baseline ping, and baseline-not-found error visibility.
+- Validation complete: `cargo build -vv` and `cargo test -vv` both pass.
+- Fixed baseline-approval troubleshooting gaps:
+  - normalize/trim integration inputs on both UI submit and backend create/update paths,
+  - persist approval failures into integration status so errors are visible on cards after refresh (not only browser alerts).
+- Validation complete after approval fixes: `cargo build -vv` and `cargo test -vv` both pass.
+- Updated `Ping baseline` behavior to manually capture/update the approved baseline from the live source, persist the snapshot, and set trust state to `Approved`.
+- Added test coverage for baseline refresh via `ping_baseline`.
+- Validation complete for manual baseline refresh: `cargo build -vv` and `cargo test -vv` both pass (8 tests).
+- Hardened HTTP schema URL parsing to ignore accidental whitespace (e.g., `http:// /host/...`) so baseline approve/ping is less fragile.
+- Added parsing test coverage for whitespace-tolerant HTTP URL handling.
+- Validation complete for URL sanitation hardening: `cargo build -vv` and `cargo test -vv` both pass (9 tests).
+- Fixed HTTP schema fetching for chunked responses (`Transfer-Encoding: chunked`), which affected localhost Kestrel endpoints and caused JSON parse errors.
+- Added chunked body decoding test coverage.
+- Validation complete for chunked-response support: `cargo build -vv` and `cargo test -vv` both pass (10 tests).
+- Added MCP HTTP tool-catalog schema profile enforcement for `http_json` integrations:
+  - requires top-level `tools` array,
+  - validates each tool has `name`, `description`, and object `inputSchema`,
+  - enforces unique tool names and `toolCount` consistency when provided.
+- Added `MCP_SCHEMA_SPEC.md` documenting the enforced MCP schema profile.
+- Added tests for valid/invalid MCP tool-catalog schema validation.
+- Validation complete for MCP schema profile enforcement: `cargo build -vv` and `cargo test -vv` both pass (12 tests).
