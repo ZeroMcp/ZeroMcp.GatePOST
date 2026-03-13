@@ -1109,3 +1109,87 @@ const APP_HTML: &str = r#"<!DOCTYPE html>
 
 
 
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::net::{Shutdown, TcpListener, TcpStream};
+    use std::thread;
+
+    #[test]
+    fn parse_flag_map_normalizes_hyphenated_keys() {
+        let args = vec![
+            "--approved-by".to_string(),
+            "qa.user".to_string(),
+            "--check-interval-seconds".to_string(),
+            "30".to_string(),
+        ];
+
+        let parsed = parse_flag_map(&args).expect("flags parsed");
+
+        assert_eq!(parsed.get("approved_by"), Some(&"qa.user".to_string()));
+        assert_eq!(
+            parsed.get("check_interval_seconds"),
+            Some(&"30".to_string())
+        );
+    }
+
+    #[test]
+    fn parse_flag_map_rejects_odd_number_of_args() {
+        let args = vec!["--schema".to_string()];
+        let error = parse_flag_map(&args).expect_err("should fail");
+        assert!(error.contains("--name value pairs"));
+    }
+
+    #[test]
+    fn extract_integration_id_exact_rejects_nested_paths() {
+        let error = extract_integration_id_exact("/api/integrations/demo/check")
+            .expect_err("nested path should fail");
+        assert!(error.contains("Invalid integration endpoint"));
+    }
+
+    #[test]
+    fn extract_integration_id_trims_suffix_and_slashes() {
+        let id = extract_integration_id("/api/integrations/demo/check", "/check")
+            .expect("id extracted");
+        assert_eq!(id, "demo");
+    }
+
+    #[test]
+    fn read_http_request_parses_method_path_and_body() {
+        let listener = TcpListener::bind("127.0.0.1:0").expect("bind listener");
+        let address = listener.local_addr().expect("listener addr");
+
+        let client = thread::spawn(move || {
+            let mut stream = TcpStream::connect(address).expect("connect client");
+            let body = r#"{"approved_by":"qa.user"}"#;
+            let request = format!(
+                "POST /api/integrations/demo/approve HTTP/1.1\r\nHost: 127.0.0.1\r\nContent-Length: {}\r\n\r\n{}",
+                body.len(),
+                body
+            );
+            stream
+                .write_all(request.as_bytes())
+                .expect("write request");
+            let _ = stream.shutdown(Shutdown::Both);
+        });
+
+        let (mut server_stream, _) = listener.accept().expect("accept server");
+        let request = read_http_request(&mut server_stream).expect("request parsed");
+
+        assert_eq!(request.method, "POST");
+        assert_eq!(request.path, "/api/integrations/demo/approve");
+        assert_eq!(
+            String::from_utf8(request.body).expect("utf8 body"),
+            r#"{"approved_by":"qa.user"}"#
+        );
+
+        client.join().expect("client joined");
+    }
+
+    #[test]
+    fn parse_command_defaults_to_help_without_args() {
+        let command = parse_command(Vec::new()).expect("command parsed");
+        assert!(matches!(command, Command::Help));
+    }
+}
